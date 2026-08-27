@@ -1,0 +1,6 @@
+[webservers]
+Web-A ansible_host=172.31.17.254
+Web-B ansible_host=172.31.26.8
+
+[all:vars]
+ansible_user=ec2-user
