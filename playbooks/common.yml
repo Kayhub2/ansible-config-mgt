@@ -1,0 +1,106 @@
+---
+- name: Update web and nfs servers
+  hosts: webservers, nfs
+  become: yes
+
+  tasks:
+    - name: Ensure wireshark is at the latest version
+      yum:
+        name: wireshark
+        state: latest
+
+    - name: Create StegHub directory
+      ansible.builtin.file:
+        path: /opt/steghub
+        state: directory
+        mode: '0755'
+
+    - name: Create file inside StegHub directory
+      ansible.builtin.file:
+        path: /opt/steghub/info.txt
+        state: touch
+        mode: '0644'
+
+    - name: Set timezone to Africa/Lagos
+      community.general.timezone:
+        name: Africa/Lagos
+
+    - name: Run shell script
+      ansible.builtin.shell: |
+        echo "Ansible configuration completed on $(hostname)" >> /opt/steghub/info.txt
+      args:
+        executable: /bin/bash
+
+
+- name: Update database server
+  hosts: db
+  become: yes
+
+  tasks:
+    - name: Update apt repo
+      apt:
+        update_cache: yes
+
+    - name: Ensure wireshark is at the latest version
+      apt:
+        name: wireshark
+        state: latest
+
+    - name: Create StegHub directory
+      ansible.builtin.file:
+        path: /opt/steghub
+        state: directory
+        mode: '0755'
+
+    - name: Create file inside StegHub directory
+      ansible.builtin.file:
+        path: /opt/steghub/info.txt
+        state: touch
+        mode: '0644'
+
+    - name: Set timezone to Africa/Lagos
+      community.general.timezone:
+        name: Africa/Lagos
+
+    - name: Run shell script
+      ansible.builtin.shell: |
+        echo "Ansible configuration completed on $(hostname)" >> /opt/steghub/info.txt
+      args:
+        executable: /bin/bash
+
+
+- name: Update LB server
+  hosts: lb
+  become: yes
+
+  tasks:
+    - name: Update apt repo
+      apt:
+        update_cache: yes
+
+    - name: Ensure wireshark is at the latest version
+      apt:
+        name: wireshark
+        state: latest
+
+    - name: Create StegHub directory
+      ansible.builtin.file:
+        path: /opt/steghub
+        state: directory
+        mode: '0755'
+
+    - name: Create file inside StegHub directory
+      ansible.builtin.file:
+        path: /opt/steghub/info.txt
+        state: touch
+        mode: '0644'
+
+    - name: Set timezone to Africa/Lagos
+      community.general.timezone:
+        name: Africa/Lagos
+
+    - name: Run shell script
+      ansible.builtin.shell: |
+        echo "Ansible configuration completed on $(hostname)" >> /opt/steghub/info.txt
+      args:
+        executable: /bin/bash
