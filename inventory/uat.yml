@@ -1,0 +1,13 @@
+---
+all:
+  children:
+    uat_webservers:
+      hosts:
+        Web1-UAT:
+          ansible_host: 172.31.18.247
+          ansible_user: ec2-user
+          ansible_ssh_private_key_file: /home/ubuntu/kaykey.pem
+        Web2-UAT:
+          ansible_host: 172.31.27.250
+          ansible_user: ec2-user
+          ansible_ssh_private_key_file: /home/ubuntu/kaykey.pem
