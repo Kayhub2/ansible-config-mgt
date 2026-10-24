@@ -1,0 +1,54 @@
+---
+- name: Install Apache, Git and PHP packages
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - httpd
+      - git
+      - php
+      - php-mysqlnd
+    state: present
+
+- name: Clone Tooling website repository
+  become: true
+  ansible.builtin.git:
+    repo: https://github.com/Kayhub2/tooling.git
+    dest: /var/www/html
+    force: true
+
+- name: Copy website content to Apache document root
+  become: true
+  ansible.builtin.shell: cp -r /var/www/html/html/. /var/www/html/
+  args:
+    creates: /var/www/html/index.php
+
+- name: Remove nested HTML directory
+  become: true
+  ansible.builtin.file:
+    path: /var/www/html/html
+    state: absent
+
+- name: Configure Apache to serve index.php
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/httpd/conf.d/tooling.conf
+    content: |
+      DirectoryIndex index.php index.html
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Apache
+
+- name: Disable the default Apache welcome page
+  become: true
+  ansible.builtin.file:
+    path: /etc/httpd/conf.d/welcome.conf
+    state: absent
+  notify: Restart Apache
+
+- name: Ensure Apache is started and enabled
+  become: true
+  ansible.builtin.service:
+    name: httpd
+    state: started
+    enabled: true
