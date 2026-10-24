@@ -1,11 +1,11 @@
 ---
-- name: Update web and nfs servers
-  hosts: webservers, nfs
-  become: yes
+- name: Configure web and NFS servers
+  hosts: webservers,nfs
+  become: true
 
   tasks:
-    - name: Ensure wireshark is at the latest version
-      yum:
+    - name: Ensure Wireshark is installed
+      ansible.builtin.yum:
         name: wireshark
         state: latest
 
@@ -13,36 +13,36 @@
       ansible.builtin.file:
         path: /opt/steghub
         state: directory
+        owner: root
+        group: root
         mode: '0755'
 
-    - name: Create file inside StegHub directory
-      ansible.builtin.file:
+    - name: Record Ansible configuration completion
+      ansible.builtin.lineinfile:
         path: /opt/steghub/info.txt
-        state: touch
+        line: "Ansible configuration completed on {{ inventory_hostname }}"
+        create: true
+        owner: root
+        group: root
         mode: '0644'
 
     - name: Set timezone to Africa/Lagos
       community.general.timezone:
         name: Africa/Lagos
 
-    - name: Run shell script
-      ansible.builtin.shell: |
-        echo "Ansible configuration completed on $(hostname)" >> /opt/steghub/info.txt
-      args:
-        executable: /bin/bash
 
-
-- name: Update database server
+- name: Configure database server
   hosts: db
-  become: yes
+  become: true
 
   tasks:
-    - name: Update apt repo
-      apt:
-        update_cache: yes
+    - name: Update apt package cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
 
-    - name: Ensure wireshark is at the latest version
-      apt:
+    - name: Ensure Wireshark is installed
+      ansible.builtin.apt:
         name: wireshark
         state: latest
 
@@ -50,36 +50,36 @@
       ansible.builtin.file:
         path: /opt/steghub
         state: directory
+        owner: root
+        group: root
         mode: '0755'
 
-    - name: Create file inside StegHub directory
-      ansible.builtin.file:
+    - name: Record Ansible configuration completion
+      ansible.builtin.lineinfile:
         path: /opt/steghub/info.txt
-        state: touch
+        line: "Ansible configuration completed on {{ inventory_hostname }}"
+        create: true
+        owner: root
+        group: root
         mode: '0644'
 
     - name: Set timezone to Africa/Lagos
       community.general.timezone:
         name: Africa/Lagos
 
-    - name: Run shell script
-      ansible.builtin.shell: |
-        echo "Ansible configuration completed on $(hostname)" >> /opt/steghub/info.txt
-      args:
-        executable: /bin/bash
 
-
-- name: Update LB server
+- name: Configure load balancer
   hosts: lb
-  become: yes
+  become: true
 
   tasks:
-    - name: Update apt repo
-      apt:
-        update_cache: yes
+    - name: Update apt package cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
 
-    - name: Ensure wireshark is at the latest version
-      apt:
+    - name: Ensure Wireshark is installed
+      ansible.builtin.apt:
         name: wireshark
         state: latest
 
@@ -87,20 +87,19 @@
       ansible.builtin.file:
         path: /opt/steghub
         state: directory
+        owner: root
+        group: root
         mode: '0755'
 
-    - name: Create file inside StegHub directory
-      ansible.builtin.file:
+    - name: Record Ansible configuration completion
+      ansible.builtin.lineinfile:
         path: /opt/steghub/info.txt
-        state: touch
+        line: "Ansible configuration completed on {{ inventory_hostname }}"
+        create: true
+        owner: root
+        group: root
         mode: '0644'
 
     - name: Set timezone to Africa/Lagos
       community.general.timezone:
         name: Africa/Lagos
-
-    - name: Run shell script
-      ansible.builtin.shell: |
-        echo "Ansible configuration completed on $(hostname)" >> /opt/steghub/info.txt
-      args:
-        executable: /bin/bash
