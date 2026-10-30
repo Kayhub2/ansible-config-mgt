@@ -8,25 +8,45 @@
       - php
       - php-mysqlnd
     state: present
+  tags:
+    - packages
 
-- name: Clone Tooling website repository
+- name: Ensure source parent directory exists
+  become: true
+  ansible.builtin.file:
+    path: /opt/steghub
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Clone Tooling website repository into a separate source directory
   become: true
   ansible.builtin.git:
     repo: https://github.com/Kayhub2/tooling.git
-    dest: /var/www/html
-    force: true
+    dest: /opt/steghub/tooling-source
+    version: main
+    force: false
 
-- name: Copy website content to Apache document root
-  become: true
-  ansible.builtin.shell: cp -r /var/www/html/html/. /var/www/html/
-  args:
-    creates: /var/www/html/index.php
-
-- name: Remove nested HTML directory
+- name: Ensure Apache document root exists
   become: true
   ansible.builtin.file:
-    path: /var/www/html/html
-    state: absent
+    path: /var/www/html
+    state: directory
+    owner: apache
+    group: apache
+    mode: '0755'
+
+- name: Deploy Tooling website content to Apache document root
+  become: true
+  ansible.builtin.copy:
+    src: /opt/steghub/tooling-source/html/
+    dest: /var/www/html/
+    remote_src: true
+    owner: apache
+    group: apache
+    directory_mode: '0755'
+  notify: Restart Apache
 
 - name: Configure Apache to serve index.php
   become: true
